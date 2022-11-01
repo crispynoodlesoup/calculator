@@ -14,7 +14,7 @@ const multiply = (a, b) => a * b;
 const divide = (a, b) => a / b;
 
 const inputKeyboard = (e) => {
-    console.log(e.code);
+    console.log(e.keyCode);
 };
 
 updateDisplay();
