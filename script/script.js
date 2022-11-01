@@ -1,11 +1,22 @@
 const display =  document.querySelector("#display");
 const displayLength = 12;
-let dStr = "91827334132515431767139";
+let dStr = "91827334";
 
-let updateDisplay = () => {
+const updateDisplay = () => {
     if(dStr.length > displayLength)
-        dStr = dStr.substring(dStr.length - displayLength, dStr.length);
+        dStr = dStr.substring(0, displayLength);
     display.innerText = dStr;
 };
 
+const add = (a, b) => a + b;
+const subtract = (a, b) => a - b;
+const multiply = (a, b) => a * b;
+const divide = (a, b) => a / b;
+
+const inputKeyboard = (e) => {
+    console.log(e.code);
+};
+
 updateDisplay();
+
+window.addEventListener("keydown", inputKeyboard);
