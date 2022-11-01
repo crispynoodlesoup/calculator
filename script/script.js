@@ -19,7 +19,12 @@ const multiply = (a, b) => a * b;
 const divide = (a, b) => a / b;
 
 const inputKeyboard = (e) => {
-    console.log(e.keyCode);
+    console.log(e);
+    if(e.keyCode == 8 && mainStr.length > 0)
+        mainStr = mainStr.substring(0, mainStr.length-1);
+    if(e.keyCode <= 57 && e.keyCode >= 48)
+        mainStr += `${e.keyCode - 48}`;
+    updateDisplay();
 };
 
 updateDisplay();
