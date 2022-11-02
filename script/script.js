@@ -2,18 +2,20 @@ const display = document.querySelector("#display");
 const auxiliaryText = document.querySelector("#display-previous");
 const mainText = document.querySelector("#display-input");
 const displayLength = 12;
+let shift = false;
+let erase = true;
 let operation = "";
-let auxStr = "omg hi =";
+let auxStr = "";
 let mainStr = "";
 let operand = "";
 
 auxiliaryText.innerText = auxStr;
 
 const updateDisplay = () => {
+    auxiliaryText.innerText = auxStr;
     if (mainStr.length > displayLength)
         mainStr = mainStr.substring(0, displayLength);
     mainText.innerText = mainStr;
-    auxiliaryText.innerText = auxStr;
 };
 
 const add = (a, b) => Number.parseInt(a) + Number.parseInt(b);
@@ -21,43 +23,89 @@ const subtract = (a, b) => Number.parseInt(a) - Number.parseInt(b);
 const multiply = (a, b) => Number.parseInt(a) * Number.parseInt(b);
 const divide = (a, b) => Number.parseInt(a) / Number.parseInt(b);
 const operate = () => {
-    console.log("well we got here");
     if (operation != "") {
         let operand2 = mainStr;
         let result = "ERROR";
-        if (operation === "-") {
+        if(operation === "-") 
             result = subtract(operand, operand2);
-            auxStr = `${operand} ${operation} ${operand2} =`;
-        }
+        if(operation === "+")
+            result = add(operand, operand2);
+
 
         console.log(result);
+        auxStr = `${operand} ${operation} ${operand2} =`;
         operand = "";
         mainStr = result;
+        erase = true;
     }
 };
 
 const inputKeyboard = (e) => {
-    console.log(e);
+    console.log(e.code);
+
+    // backspace
     if (e.keyCode === 8 && mainStr.length > 0)
         mainStr = mainStr.substring(0, mainStr.length - 1);
+
+    // erase display
+    if(erase && ((e.keyCode <= 57 && e.keyCode >= 48) || e.keyCode == 8)) {
+        mainStr = "";
+        erase = false;
+    }
+    
+    // digits 0-9
     if (e.keyCode <= 57 && e.keyCode >= 48)
         mainStr += `${e.keyCode - 48}`;
+    
+    // minus
     if (e.keyCode === 189) {
+        erase = false;
         operation = "-";
-        if (operand === "") {
+        if(!operand && mainStr) {
             operand = mainStr;
             mainStr = "";
             auxStr = `${operand} -`;
-        } else
+        } else if(!mainStr && operand ) {
+            auxStr = `${operand} -`;
+        } else if(mainStr && operand)
             operate();
     }
-    if (e.keyCode === 13) {
+    
+    // plus
+    if (e.keyCode === 187 && shift) {
+        erase = false;
+        operation = "+";
+        if(!operand && mainStr) {
+            operand = mainStr;
+            mainStr = "";
+            auxStr = `${operand} +`;
+        } else if(!mainStr && operand ) {
+            auxStr = `${operand} +`;
+        } else if(mainStr && operand)
+            operate();
+    }
+
+    // enter
+    if (e.keyCode === 13 && mainStr && operand) {
+        erase = false;
         operate();
         operation = "";
     };
+
+    // shift
+    if(e.keyCode === 16)
+        shift = true;
+    
     updateDisplay();
 };
 
-updateDisplay();
+const letGoShift = (e) => {
+    if(e.keyCode == 16)
+        shift = false;
+};
+
+auxiliaryText.innerText = "Welcome to";
+mainText.innerText = "CALCULATOR!";
 
 window.addEventListener("keydown", inputKeyboard);
+window.addEventListener("keyup", letGoShift);
