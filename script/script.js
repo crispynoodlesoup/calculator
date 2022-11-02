@@ -4,6 +4,7 @@ const mainText = document.querySelector("#display-input");
 const displayLength = 12;
 let shift = false;
 let erase = true;
+let decimal = false;
 let operation = "";
 let auxStr = "";
 let mainStr = "";
@@ -18,10 +19,10 @@ const updateDisplay = () => {
     mainText.innerText = mainStr;
 };
 
-const add = (a, b) => Number.parseInt(a) + Number.parseInt(b);
-const subtract = (a, b) => Number.parseInt(a) - Number.parseInt(b);
-const multiply = (a, b) => Number.parseInt(a) * Number.parseInt(b);
-const divide = (a, b) => Number.parseInt(a) / Number.parseInt(b);
+const add = (a, b) => Number.parseFloat(a) + Number.parseFloat(b);
+const subtract = (a, b) => Number.parseFloat(a) - Number.parseFloat(b);
+const multiply = (a, b) => Number.parseFloat(a) * Number.parseFloat(b);
+const divide = (a, b) => Number.parseFloat(a) / Number.parseFloat(b);
 const operate = () => {
     if (operation != "") {
         let operand2 = mainStr;
@@ -30,7 +31,6 @@ const operate = () => {
             result = subtract(operand, operand2);
         if(operation === "+")
             result = add(operand, operand2);
-
 
         console.log(result);
         auxStr = `${operand} ${operation} ${operand2} =`;
@@ -41,7 +41,7 @@ const operate = () => {
 };
 
 const inputKeyboard = (e) => {
-    console.log(e.code);
+    console.log(e.keyCode);
 
     // backspace
     if (e.keyCode === 8 && mainStr.length > 0)
@@ -90,7 +90,7 @@ const inputKeyboard = (e) => {
         erase = false;
         operate();
         operation = "";
-    };
+    }
 
     // shift
     if(e.keyCode === 16)
@@ -103,6 +103,12 @@ const letGoShift = (e) => {
     if(e.keyCode == 16)
         shift = false;
 };
+
+const formatNum = (num) => {
+    if(Number.isInteger(num))
+        return num;
+    return num.toFixed(3);
+}
 
 auxiliaryText.innerText = "Welcome to";
 mainText.innerText = "CALCULATOR!";
