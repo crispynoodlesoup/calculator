@@ -18,10 +18,10 @@ const updateDisplay = () => {
     mainText.innerText = mainStr;
 };
 
-const add = (a, b) => formatNum(Number.parseFloat(a) + Number.parseFloat(b));
-const subtract = (a, b) => formatNum(Number.parseFloat(a) - Number.parseFloat(b));
-const multiply = (a, b) => formatNum(Number.parseFloat(a) * Number.parseFloat(b));
-const divide = (a, b) => formatNum(Number.parseFloat(a) / Number.parseFloat(b));
+const add = (a, b) => Number.parseFloat(a) + Number.parseFloat(b);
+const subtract = (a, b) => Number.parseFloat(a) - Number.parseFloat(b);
+const multiply = (a, b) => Number.parseFloat(a) * Number.parseFloat(b);
+const divide = (a, b) => Number.parseFloat(a) / Number.parseFloat(b);
 const operate = () => {
     if (operation != "") {
         let operand2 = mainStr;
@@ -32,10 +32,15 @@ const operate = () => {
             result = add(operand, operand2);
 
         console.log(result);
-        auxStr = `${operand} ${operation} ${operand2} =`;
+        if(`${result}`.length > displayLength) {
+            auxStr = "ERROR";
+            result = "TOO BIG";
+        } else {
+            auxStr = `${operand} ${operation} ${operand2} =`;
+            erase = true;
+        }
         operand = "";
         mainStr = result;
-        erase = true;
     }
 };
 
@@ -45,6 +50,12 @@ const inputKeyboard = (e) => {
     // backspace
     if (e.keyCode === 8 && mainStr.length > 0)
         mainStr = mainStr.substring(0, mainStr.length - 1);
+
+    // erase screen on click if mainStr is NaN
+    if (isNaN(Number(mainStr)) && !(mainStr === "-")) {
+        mainStr = "";
+        auxStr = "";
+    }
 
     // erase display
     if (erase && ((e.keyCode <= 57 && e.keyCode >= 48) || e.keyCode == 8)) {
@@ -113,13 +124,6 @@ const letGoShift = (e) => {
     if (e.keyCode == 16)
         shift = false;
 };
-
-const formatNum = (num) => {
-    if (Number.isInteger(num))
-        return num;
-    return num.toFixed(3);
-}
-
 auxiliaryText.innerText = "Welcome to";
 mainText.innerText = "CALCULATOR!";
 
