@@ -47,6 +47,7 @@ body {
 }
 
 .calc-button {
+    font-size: 16px;
     background-color: #757575;
     color: white;
     text-align: center;

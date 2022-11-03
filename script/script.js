@@ -27,10 +27,14 @@ const operate = () => {
     if (operation != "") {
         let operand2 = mainStr;
         let result = "ERROR";
-        if (operation === "-")
-            result = subtract(operand, operand2);
         if (operation === "+")
             result = add(operand, operand2);
+        if (operation === "-")
+            result = subtract(operand, operand2);
+        if (operation === "*")
+            result = multiply(operand, operand2);
+        if (operation === "/")
+            result = divide(operand, operand2);
 
         result = formatFloat(result);
         console.log(result);
@@ -59,13 +63,13 @@ const inputKeyboard = (e) => {
     }
 
     // erase display
-    if (erase && ((e.keyCode <= 57 && e.keyCode >= 48) || e.keyCode == 8)) {
+    if (erase && ((e.keyCode <= 57 && e.keyCode >= 48 && !shift) || e.keyCode == 8)) {
         mainStr = "";
         erase = false;
     }
 
     // digits 0-9
-    if (e.keyCode <= 57 && e.keyCode >= 48)
+    if (e.keyCode <= 57 && e.keyCode >= 48 && !shift)
         mainStr += `${e.keyCode - 48}`;
 
     // minus
@@ -96,6 +100,34 @@ const inputKeyboard = (e) => {
             auxStr = `${operand} +`;
         } else if (!mainStr && operand) {
             auxStr = `${operand} +`;
+        } else if (mainStr && operand)
+            operate();
+    }
+
+    // asterick
+    if (e.keyCode === 56 && shift) {
+        erase = false;
+        operation = "*";
+        if (!operand && mainStr) {
+            operand = mainStr;
+            mainStr = "";
+            auxStr = `${operand} *`;
+        } else if (!mainStr && operand) {
+            auxStr = `${operand} *`;
+        } else if (mainStr && operand)
+            operate();
+    }
+
+    // slash
+    if (e.keyCode === 191) {
+        erase = false;
+        operation = "/";
+        if (!operand && mainStr) {
+            operand = mainStr;
+            mainStr = "";
+            auxStr = `${operand} /`;
+        } else if (!mainStr && operand) {
+            auxStr = `${operand} /`;
         } else if (mainStr && operand)
             operate();
     }
