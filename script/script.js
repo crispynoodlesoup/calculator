@@ -22,6 +22,7 @@ const add = (a, b) => Number.parseFloat(a) + Number.parseFloat(b);
 const subtract = (a, b) => Number.parseFloat(a) - Number.parseFloat(b);
 const multiply = (a, b) => Number.parseFloat(a) * Number.parseFloat(b);
 const divide = (a, b) => Number.parseFloat(a) / Number.parseFloat(b);
+
 const operate = () => {
     if (operation != "") {
         let operand2 = mainStr;
@@ -31,11 +32,11 @@ const operate = () => {
         if (operation === "+")
             result = add(operand, operand2);
 
+        result = formatFloat(result);
         console.log(result);
-        if(`${result}`.length > displayLength) {
+        if(result == "PRECISION")
             auxStr = "ERROR";
-            result = "TOO BIG";
-        } else {
+        else {
             auxStr = `${operand} ${operation} ${operand2} =`;
             erase = true;
         }
@@ -124,6 +125,20 @@ const letGoShift = (e) => {
     if (e.keyCode == 16)
         shift = false;
 };
+
+const formatFloat = (f) => {
+    if(`${f}`.length <= displayLength)
+        return f;
+    if(`${Math.trunc(f)}`.length + 1 > displayLength)
+        return "PRECISION";
+    return f.toFixed(displayLength - (`${Math.trunc(f)}`.length + 1));
+};
+
+console.log(formatFloat(123456789.1234));
+console.log(formatFloat(1234567890.123));
+console.log(formatFloat(12345678.12345));
+console.log(formatFloat(12345678.2));
+
 auxiliaryText.innerText = "Welcome to";
 mainText.innerText = "CALCULATOR!";
 
