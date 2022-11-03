@@ -9,6 +9,14 @@ let auxStr = "";
 let mainStr = "";
 let operand = "";
 
+const calcButtons = document.querySelectorAll(".calc-button");
+console.log(calcButtons);
+calcButtons.forEach(btn => btn.addEventListener("mousedown", clickBtn));
+calcButtons.forEach(btn => btn.addEventListener("mouseup", unclickBtn));
+
+function clickBtn(e) { input({keyCode: this.dataset["key"]}) }
+function unclickBtn(e) { keyUp({keyCode: this.dataset["key"]}) }
+
 const updateDisplay = () => {
     auxiliaryText.innerText = auxStr;
     if (mainStr.length > displayLength)
@@ -50,7 +58,7 @@ const operate = () => {
     }
 };
 
-const inputKeyboard = (e) => {
+const input = (e) => {
     console.log(e.keyCode);
 
     // to account for special case of asterisk and plus
@@ -64,7 +72,7 @@ const inputKeyboard = (e) => {
         button.classList.add("button-animation");
 
     // backspace
-    if (e.keyCode === 8 && mainStr.length > 0)
+    if (e.keyCode == 8 && mainStr.length > 0)
         mainStr = mainStr.substring(0, mainStr.length - 1);
 
     // erase screen on click if mainStr is NaN
@@ -79,12 +87,22 @@ const inputKeyboard = (e) => {
         erase = false;
     }
 
+    if(e.keyCode == 82) {
+        auxStr = "Thanks for checking out my calculator!";
+        mainStr = "- RAFAEL P.";
+    }
+
+    if(e.keyCode == 76) {
+        auxStr = "wow look at this additional functionality!";
+        mainStr = "it's so cool!";
+    }
+
     // digits 0-9
     if (e.keyCode <= 57 && e.keyCode >= 48 && !shift)
         mainStr += `${e.keyCode - 48}`;
 
     // minus
-    if (e.keyCode === 189) {
+    if (e.keyCode == 189) {
         if (!mainStr) {
             mainStr += "-";
         } else {
@@ -102,7 +120,7 @@ const inputKeyboard = (e) => {
     }
 
     // plus
-    if (e.keyCode === 187 && shift) {
+    if ((e.keyCode == 187 && shift) || e.keyCode == 1187) {
         erase = false;
         operation = "+";
         if (!operand && mainStr && !isNaN(Number(mainStr))) {
@@ -116,7 +134,7 @@ const inputKeyboard = (e) => {
     }
 
     // asterisk
-    if (e.keyCode === 56 && shift) {
+    if ((e.keyCode == 56 && shift) || e.keyCode == 1056) {
         erase = false;
         operation = "*";
         if (!operand && mainStr && !isNaN(Number(mainStr))) {
@@ -130,7 +148,7 @@ const inputKeyboard = (e) => {
     }
 
     // slash
-    if (e.keyCode === 191) {
+    if (e.keyCode == 191) {
         erase = false;
         operation = "/";
         if (!operand && mainStr && !isNaN(Number(mainStr))) {
@@ -144,21 +162,21 @@ const inputKeyboard = (e) => {
     }
 
     // enter
-    if (e.keyCode === 13 && mainStr && !isNaN(Number(mainStr)) && operand) {
+    if (e.keyCode == 13 && mainStr && !isNaN(Number(mainStr)) && operand) {
         erase = false;
         operate();
         operation = "";
     }
 
     // period
-    if (e.keyCode === 190 && !mainStr.includes(".")) {
+    if (e.keyCode == 190 && !mainStr.includes(".")) {
         if (!mainStr)
             mainStr += "0";
         mainStr += ".";
     }
 
     // shift
-    if (e.keyCode === 16)
+    if (e.keyCode == 16)
         shift = true;
 
     updateDisplay();
@@ -187,5 +205,5 @@ const formatFloat = (f) => {
 auxiliaryText.innerText = "Welcome to";
 mainText.innerText = "CALCULATOR!";
 
-window.addEventListener("keydown", inputKeyboard);
+window.addEventListener("keydown", input);
 window.addEventListener("keyup", keyUp);
