@@ -38,7 +38,7 @@ const operate = () => {
         console.log(result);
         if (result == "TOO BIG")
             auxStr = "ERROR";
-        if (`${result}` == "Infinity") {
+        else if (`${result}` == "Infinity") {
             auxStr = "ERROR";
             result = "STUPIDITY";
         } else {
@@ -51,6 +51,8 @@ const operate = () => {
 };
 
 const inputKeyboard = (e) => {
+    console.log(e.keyCode);
+
     // to account for special case of asterisk and plus
     let code = e.keyCode;
     if (shift && (code == 187 || code == 56))
@@ -58,9 +60,8 @@ const inputKeyboard = (e) => {
 
     // animation stuff!!
     const button = document.querySelector(`button[data-key="${code}"]`);
-    if (button) {
+    if (button)
         button.classList.add("button-animation");
-    }
 
     // backspace
     if (e.keyCode === 8 && mainStr.length > 0)
