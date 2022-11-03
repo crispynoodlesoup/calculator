@@ -9,8 +9,6 @@ let auxStr = "";
 let mainStr = "";
 let operand = "";
 
-auxiliaryText.innerText = auxStr;
-
 const updateDisplay = () => {
     auxiliaryText.innerText = auxStr;
     if (mainStr.length > displayLength)
@@ -38,9 +36,12 @@ const operate = () => {
 
         result = formatFloat(result);
         console.log(result);
-        if(result == "TOO BIG")
+        if (result == "TOO BIG")
             auxStr = "ERROR";
-        else {
+        if (`${result}` == "Infinity") {
+            auxStr = "ERROR";
+            result = "STUPIDITY";
+        } else {
             auxStr = `${operand} ${operation} ${operand2} =`;
             erase = true;
         }
@@ -50,14 +51,23 @@ const operate = () => {
 };
 
 const inputKeyboard = (e) => {
-    console.log(e.keyCode);
+    // to account for special case of asterisk and plus
+    let code = e.keyCode;
+    if (shift && (code == 187 || code == 56))
+        code += 1000;
+
+    // animation stuff!!
+    const button = document.querySelector(`button[data-key="${code}"]`);
+    if (button) {
+        button.classList.add("button-animation");
+    }
 
     // backspace
     if (e.keyCode === 8 && mainStr.length > 0)
         mainStr = mainStr.substring(0, mainStr.length - 1);
 
     // erase screen on click if mainStr is NaN
-    if (isNaN(Number(mainStr)) && !(mainStr === "-")) {
+    if (isNaN(Number(mainStr)) && !(mainStr === "-") || e.keyCode == 87) {
         mainStr = "";
         auxStr = "";
     }
@@ -79,13 +89,13 @@ const inputKeyboard = (e) => {
         } else {
             erase = false;
             operation = "-";
-            if (!operand && mainStr) {
+            if (!operand && mainStr && !isNaN(Number(mainStr))) {
                 operand = mainStr;
                 mainStr = "";
                 auxStr = `${operand} -`;
             } else if (!mainStr && operand) {
                 auxStr = `${operand} -`;
-            } else if (mainStr && operand)
+            } else if (mainStr && operand && !isNaN(Number(mainStr)))
                 operate();
         }
     }
@@ -94,27 +104,27 @@ const inputKeyboard = (e) => {
     if (e.keyCode === 187 && shift) {
         erase = false;
         operation = "+";
-        if (!operand && mainStr) {
+        if (!operand && mainStr && !isNaN(Number(mainStr))) {
             operand = mainStr;
             mainStr = "";
             auxStr = `${operand} +`;
         } else if (!mainStr && operand) {
             auxStr = `${operand} +`;
-        } else if (mainStr && operand)
+        } else if (mainStr && operand && !isNaN(Number(mainStr)))
             operate();
     }
 
-    // asterick
+    // asterisk
     if (e.keyCode === 56 && shift) {
         erase = false;
         operation = "*";
-        if (!operand && mainStr) {
+        if (!operand && mainStr && !isNaN(Number(mainStr))) {
             operand = mainStr;
             mainStr = "";
             auxStr = `${operand} *`;
         } else if (!mainStr && operand) {
             auxStr = `${operand} *`;
-        } else if (mainStr && operand)
+        } else if (mainStr && operand && !isNaN(Number(mainStr)))
             operate();
     }
 
@@ -122,18 +132,18 @@ const inputKeyboard = (e) => {
     if (e.keyCode === 191) {
         erase = false;
         operation = "/";
-        if (!operand && mainStr) {
+        if (!operand && mainStr && !isNaN(Number(mainStr))) {
             operand = mainStr;
             mainStr = "";
             auxStr = `${operand} /`;
         } else if (!mainStr && operand) {
             auxStr = `${operand} /`;
-        } else if (mainStr && operand)
+        } else if (mainStr && operand && !isNaN(Number(mainStr)))
             operate();
     }
 
     // enter
-    if (e.keyCode === 13 && Boolean(Number(mainStr)) && operand) {
+    if (e.keyCode === 13 && mainStr && !isNaN(Number(mainStr)) && operand) {
         erase = false;
         operate();
         operation = "";
@@ -153,15 +163,22 @@ const inputKeyboard = (e) => {
     updateDisplay();
 };
 
-const letGoShift = (e) => {
+const keyUp = (e) => {
     if (e.keyCode == 16)
         shift = false;
+    
+    let code = e.keyCode;
+    if (shift && (code == 187 || code == 56))
+        code += 1000;
+    const button = document.querySelector(`button[data-key="${code}"]`);
+    if(button)
+        button.classList.remove("button-animation");
 };
 
 const formatFloat = (f) => {
-    if(`${f}`.length <= displayLength)
+    if (`${f}`.length <= displayLength)
         return f;
-    if(`${Math.trunc(f)}`.length + 1 > displayLength)
+    if (`${Math.trunc(f)}`.length + 1 > displayLength)
         return "TOO BIG";
     return f.toFixed(displayLength - (`${Math.trunc(f)}`.length + 1));
 };
@@ -170,4 +187,4 @@ auxiliaryText.innerText = "Welcome to";
 mainText.innerText = "CALCULATOR!";
 
 window.addEventListener("keydown", inputKeyboard);
-window.addEventListener("keyup", letGoShift);
+window.addEventListener("keyup", keyUp);
