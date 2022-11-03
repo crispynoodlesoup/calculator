@@ -66,6 +66,14 @@ body {
     transition: all 0.1s;
 }
 
+.red {
+    background-color: rgb(180, 66, 66);
+}
+
+.white {
+    background-color: #535353;
+}
+
 .calc-button:hover {
     cursor: pointer;
 }
