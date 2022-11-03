@@ -1,7 +1,7 @@
 const display = document.querySelector("#display");
 const auxiliaryText = document.querySelector("#display-previous");
 const mainText = document.querySelector("#display-input");
-const displayLength = 12;
+const displayLength = 15;
 let shift = false;
 let erase = false;
 let operation = "";
@@ -34,7 +34,7 @@ const operate = () => {
 
         result = formatFloat(result);
         console.log(result);
-        if(result == "PRECISION")
+        if(result == "TOO BIG")
             auxStr = "ERROR";
         else {
             auxStr = `${operand} ${operation} ${operand2} =`;
@@ -130,14 +130,9 @@ const formatFloat = (f) => {
     if(`${f}`.length <= displayLength)
         return f;
     if(`${Math.trunc(f)}`.length + 1 > displayLength)
-        return "PRECISION";
+        return "TOO BIG";
     return f.toFixed(displayLength - (`${Math.trunc(f)}`.length + 1));
 };
-
-console.log(formatFloat(123456789.1234));
-console.log(formatFloat(1234567890.123));
-console.log(formatFloat(12345678.12345));
-console.log(formatFloat(12345678.2));
 
 auxiliaryText.innerText = "Welcome to";
 mainText.innerText = "CALCULATOR!";
